@@ -11,33 +11,19 @@
 
     <script>
         document.getElementById('playButton').addEventListener('click', function() {
-            const sharedUrl = "https://home.mycloud.com/action/share/832f118f-37b9-4e54-b5e1-766dbf5fbdc4";  // Your shared URL
+            const videoLink = "https://device-local-9e7f3dc5-7a69-44a2-9672-b444b60548a0.remotewd.com:4430/sdk/v2/files/4jnh6z54xhmiyksgnl4obflx/content?download=true&access_token=eyJraWQiOiJNOHNrM1VSdnZHMnhKZ3FkZDdYdGhWZnhyQVptdmVvMyIsImFsZyI6IlJTMjU2In0.eyJqdGkiOiJKV1QiLCJhdWQiOiJrZXlzdG9uZSIsImlzcyI6Im0ybS10b2tlbi1zZXJ2aWNlIiwic3ViIjoicHVibGljX3NoYXJlIiwic2NvcGVzIjoibmFzX3JlYWRfb25seSBuYXNfcmVhZF93cml0ZSIsImN1c3RvbUNsYWltcyI6eyJkZXZpY2VJZCI6IjllN2YzZGM1LTdhNjktNDRhMi05NjcyLWI0NDRiNjA1NDhhMCIsImF1dGhfaWQiOiIxNTc1YmI3Mi0xNWM5LTRiMDktOGNmNy05MTA3Y2E2YzA4MmEifSwiZXhwIjoxNzM0OTM0MDU2fQ.c822rIme1DBxuiIGpJOEz1TsXbrY4dAxBOtSJ7ij5N_uQH3PFA6ZFQ4hEGmHvI1cXRHTn4mNn9ncSeViQOtsqP2VMZ-LfUunfFKMH0awqSlAHLdILe3ai_aRlX8k5ESwRDsudE7yz0kGYHbn1JFxFshoFT0gqhNF3vMqlmoevvYluG8Y1aKQ0vzTMcmryMWVe9dZrBJBBxt5olTYfuRF0VWbeXCDOL6z95cV_oiHoB38Qt2VhTeIwGBC3Hwuc5HfGypfZvxwX1fag_TKX_SvvRyT1r7UulxxUKS7Ltyhs_nuGw-5jfmSqX4QKRY90ut31LnTQq2_xVQwWwRbx_NVfA"; // Direct link with token
 
-            // Fetch the page content to extract the token
-            fetch(sharedUrl)
-                .then(response => response.text())
-                .then(data => {
-                    // Extract the token from the response body
-                    const token = extractTokenFromResponse(data);
+            // Extract the token from the video URL
+            const tokenMatch = videoLink.match(/access_token=([^&]+)/);
+            const token = tokenMatch ? tokenMatch[1] : null;
 
-                    if (token) {
-                        const videoUrl = `https://device-local-9e7f3dc5-7a69-44a2-9672-b444b60548a0.remotewd.com:4430/sdk/v2/files/4jnh6z54xhmiyksgnl4obflx/content?access_token=${token}`;
-                        window.location.href = videoUrl;  // This triggers VLC to open
-                    } else {
-                        console.error("Token not found");
-                    }
-                })
-                .catch(error => {
-                    console.error("Error fetching the shared page:", error);
-                });
+            if (token) {
+                const videoUrl = `vlc://https://device-local-9e7f3dc5-7a69-44a2-9672-b444b60548a0.remotewd.com:4430/sdk/v2/files/4jnh6z54xhmiyksgnl4obflx/content?access_token=${token}`;
+                window.location.href = videoUrl; // Triggers VLC to play
+            } else {
+                console.error("Token not found");
+            }
         });
-
-        // Function to extract token from page content (use a simple regex or pattern)
-        function extractTokenFromResponse(response) {
-            // Example: Extract token from a URL or JavaScript response
-            const tokenMatch = response.match(/access_token=([a-zA-Z0-9_-]+)/);
-            return tokenMatch ? tokenMatch[1] : null;
-        }
     </script>
 </body>
 </html>
