@@ -21,7 +21,7 @@
                     const token = extractTokenFromResponse(data);
 
                     if (token) {
-                        const videoUrl = `vlc://https://device-local-9e7f3dc5-7a69-44a2-9672-b444b60548a0.remotewd.com:4430/sdk/v2/files/4jnh6z54xhmiyksgnl4obflx/content?access_token=${token}`;
+                        const videoUrl = `https://device-local-9e7f3dc5-7a69-44a2-9672-b444b60548a0.remotewd.com:4430/sdk/v2/files/4jnh6z54xhmiyksgnl4obflx/content?access_token=${token}`;
                         window.location.href = videoUrl;  // This triggers VLC to open
                     } else {
                         console.error("Token not found");
