@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Player</title>
+</head>
+<body>
+    <h1>Video Stream from Home Cloud</h1>
+    <button id="playButton">Play Video</button>
+
+    <script>
+        document.getElementById('playButton').addEventListener('click', function() {
+            const sharedUrl = "https://home.mycloud.com/action/share/d5ac552a-1f52-496e-87b4-1ba5f3d9b4ef";  // Your shared URL
+
+            // Fetch the page content to extract the token
+            fetch(sharedUrl)
+                .then(response => response.text())
+                .then(data => {
+                    // Extract the token from the response body
+                    const token = extractTokenFromResponse(data);
+
+                    if (token) {
+                        const videoUrl = `vlc://https://device-local-9e7f3dc5-7a69-44a2-9672-b444b60548a0.remotewd.com:4430/sdk/v2/files/4jnh6z54xhmiyksgnl4obflx/content?access_token=${token}`;
+                        window.location.href = videoUrl;  // This triggers VLC to open
+                    } else {
+                        console.error("Token not found");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching the shared page:", error);
+                });
+        });
+
+        // Function to extract token from page content (use a simple regex or pattern)
+        function extractTokenFromResponse(response) {
+            // Example: Extract token from a URL or JavaScript response
+            const tokenMatch = response.match(/access_token=([a-zA-Z0-9_-]+)/);
+            return tokenMatch ? tokenMatch[1] : null;
+        }
+    </script>
+</body>
+</html>
