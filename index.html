@@ -3,27 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Player</title>
+    <title>Dynamic Token Video Player</title>
 </head>
 <body>
-    <h1>Video Stream from Home Cloud</h1>
+    <h1>Dynamic Video Player</h1>
     <button id="playButton">Play Video</button>
 
     <script>
-        document.getElementById('playButton').addEventListener('click', function() {
-            const videoLink = "https://device-local-9e7f3dc5-7a69-44a2-9672-b444b60548a0.remotewd.com:4430/sdk/v2/files/4jnh6z54xhmiyksgnl4obflx/content?download=true&access_token=eyJraWQiOiJNOHNrM1VSdnZHMnhKZ3FkZDdYdGhWZnhyQVptdmVvMyIsImFsZyI6IlJTMjU2In0.eyJqdGkiOiJKV1QiLCJhdWQiOiJrZXlzdG9uZSIsImlzcyI6Im0ybS10b2tlbi1zZXJ2aWNlIiwic3ViIjoicHVibGljX3NoYXJlIiwic2NvcGVzIjoibmFzX3JlYWRfb25seSBuYXNfcmVhZF93cml0ZSIsImN1c3RvbUNsYWltcyI6eyJkZXZpY2VJZCI6IjllN2YzZGM1LTdhNjktNDRhMi05NjcyLWI0NDRiNjA1NDhhMCIsImF1dGhfaWQiOiIxNTc1YmI3Mi0xNWM5LTRiMDktOGNmNy05MTA3Y2E2YzA4MmEifSwiZXhwIjoxNzM0OTM0MDU2fQ.c822rIme1DBxuiIGpJOEz1TsXbrY4dAxBOtSJ7ij5N_uQH3PFA6ZFQ4hEGmHvI1cXRHTn4mNn9ncSeViQOtsqP2VMZ-LfUunfFKMH0awqSlAHLdILe3ai_aRlX8k5ESwRDsudE7yz0kGYHbn1JFxFshoFT0gqhNF3vMqlmoevvYluG8Y1aKQ0vzTMcmryMWVe9dZrBJBBxt5olTYfuRF0VWbeXCDOL6z95cV_oiHoB38Qt2VhTeIwGBC3Hwuc5HfGypfZvxwX1fag_TKX_SvvRyT1r7UulxxUKS7Ltyhs_nuGw-5jfmSqX4QKRY90ut31LnTQq2_xVQwWwRbx_NVfA"; // Direct link with token
+        async function fetchTokenAndPlay() {
+            try {
+                const originalLink = "https://home.mycloud.com/action/share/d5ac552a-1f52-496e-87b4-1ba5f3d9b4ef";
 
-            // Extract the token from the video URL
-            const tokenMatch = videoLink.match(/access_token=([^&]+)/);
-            const token = tokenMatch ? tokenMatch[1] : null;
+                // Fetch the shared page to follow the redirection and find the token URL
+                const response = await fetch(originalLink, { method: 'GET', redirect: 'follow' });
 
-            if (token) {
-                const videoUrl = `vlc://https://device-local-9e7f3dc5-7a69-44a2-9672-b444b60548a0.remotewd.com:4430/sdk/v2/files/4jnh6z54xhmiyksgnl4obflx/content?access_token=${token}`;
-                window.location.href = videoUrl; // Triggers VLC to play
-            } else {
-                console.error("Token not found");
+                // Extract the redirected URL
+                const finalUrl = response.url;
+
+                // Extract token from the final URL (or another endpoint if needed)
+                const tokenMatch = finalUrl.match(/access_token=([^&]+)/);
+                const token = tokenMatch ? tokenMatch[1] : null;
+
+                if (token) {
+                    const videoUrl = `vlc://https://device-local-9e7f3dc5-7a69-44a2-9672-b444b60548a0.remotewd.com:4430/sdk/v2/files/4jnh6z54xhmiyksgnl4obflx/content?access_token=${token}`;
+                    console.log("Generated Video URL:", videoUrl);
+
+                    // Open VLC with the video
+                    window.location.href = videoUrl;
+                } else {
+                    console.error("Failed to extract token");
+                }
+            } catch (error) {
+                console.error("Error fetching token:", error);
             }
-        });
+        }
+
+        document.getElementById('playButton').addEventListener('click', fetchTokenAndPlay);
     </script>
 </body>
 </html>
