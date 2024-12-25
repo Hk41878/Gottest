@@ -8,10 +8,14 @@ function fetchContentAndOpen(url) {
 
             if (metaTag && metaTag.getAttribute('content')) {
                 let imageUrl = metaTag.getAttribute('content');
-                // Open the image URL in a new tab
-                window.open(imageUrl, '_blank');
+                let vlcUrl = `vlc://${imageUrl}`;
+
+                // Display the link as a clickable element to open in VLC
+                document.getElementById('imageLink').innerHTML = `
+                    <a href="${vlcUrl}" target="_blank">Click here to open the image in VLC</a>
+                `;
             } else {
-                alert('No OG Image link found.');
+                document.getElementById('imageLink').innerHTML = 'No OG Image link found.';
             }
         })
         .catch(error => {
