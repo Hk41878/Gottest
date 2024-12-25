@@ -3,44 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Video Player</title>
+    <title>HDHub4U Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+        h1 {
+            color: #333;
+        }
+        input, button {
+            padding: 10px;
+            margin: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .output {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #444;
+            word-break: break-word;
+        }
+    </style>
 </head>
 <body>
-    <h1>Dynamic Video Player</h1>
-    <button id="playButton">Play Video</button>
+    <h1>HDHub4U Search Generator</h1>
+    <p>Enter text below to generate the search URL:</p>
+    <input type="text" id="inputText" placeholder="Enter text here" />
+    <button onclick="generateURL()">Generate URL</button>
+    <div class="output" id="output"></div>
 
     <script>
-        async function fetchTokenAndPlay() {
-            try {
-                const sharedLink = "https://home.mycloud.com/action/share/832f118f-37b9-4e54-b5e1-766dbf5fbdc4";
+        function generateURL() {
+            const baseURL = "https://hdhub4u.cat/?s=";
+            const inputText = document.getElementById("inputText").value.trim();
+            const encodedText = inputText.replace(/ /g, "+");
+            const finalURL = baseURL + encodedText;
 
-                // Fetch the HTML content of the shared link
-                const response = await fetch(sharedLink);
-                const html = await response.text();
-
-                // Parse the HTML to find the token
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, "text/html");
-                const downloadButton = doc.querySelector(".BrowserPreviewDownloadButton a");
-
-                if (downloadButton) {
-                    const tokenUrl = downloadButton.getAttribute("href");
-
-                    // Construct the VLC-compatible URL
-                    const videoUrl = `vlc://${tokenUrl}`;
-                    console.log("Generated Video URL:", videoUrl);
-
-                    // Open VLC with the video
-                    window.location.href = videoUrl;
-                } else {
-                    console.error("Download button or token not found.");
-                }
-            } catch (error) {
-                console.error("Error fetching token:", error);
-            }
+            const outputDiv = document.getElementById("output");
+            outputDiv.innerHTML = `Generated URL: <a href="${finalURL}" target="_blank">${finalURL}</a>`;
         }
-
-        document.getElementById('playButton').addEventListener('click', fetchTokenAndPlay);
     </script>
 </body>
 </html>
