@@ -4,73 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fetch HTML Content from Any Website</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        h1 {
-            text-align: center;
-        }
-        .container {
-            width: 80%;
-            margin: 0 auto;
-        }
-        input[type="text"] {
-            width: 80%;
-            padding: 10px;
-            margin: 10px 0;
-            font-size: 16px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-        button {
-            display: block;
-            margin: 10px auto;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        textarea {
-            width: 100%;
-            height: 300px;
-            font-family: monospace;
-            font-size: 14px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #fff;
-            margin-top: 20px;
-        }
-        #copyBtn {
-            background-color: #28a745;
-        }
-        #copyBtn:hover {
-            background-color: #218838;
-        }
-        #imageLink {
-            display: block;
-            margin: 20px 0;
-            text-align: center;
-            font-size: 16px;
-            color: #333;
-        }
-        #playBtn {
-            background-color: #ffc107;
-        }
-        #playBtn:hover {
-            background-color: #e0a800;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
@@ -79,64 +13,9 @@
     <input type="text" id="urlInput" placeholder="Enter website URL (e.g., https://example.com)">
     <button onclick="fetchContent()">Fetch Content</button>
     <textarea id="content" readonly></textarea>
-    <button id="copyBtn" onclick="copyToClipboard()">Copy Content</button>
     <div id="imageLink"></div>
-    <button id="playBtn" style="display: none;" onclick="playVlc()">Play</button>
 </div>
 
-<script>
-    function fetchContent() {
-        const url = document.getElementById('urlInput').value;
-        
-        if (!url) {
-            alert("Please enter a valid URL.");
-            return;
-        }
-        
-        const validUrl = url.startsWith('http://') || url.startsWith('https://');
-        if (!validUrl) {
-            alert("Please enter a URL with 'http://' or 'https://'");
-            return;
-        }
-
-        fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`)
-            .then(response => response.text())
-            .then(data => {
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(data, 'text/html');
-                const metaTag = doc.querySelector('meta[property="og:image"]');
-                
-                if (metaTag && metaTag.getAttribute('content')) {
-                    let imageUrl = metaTag.getAttribute('content');
-                    imageUrl = "vlc://" + imageUrl; // Prepend "vlc://" to the image URL
-                    document.getElementById('imageLink').innerHTML = `Image Link: <a href="${imageUrl}" target="_blank">${imageUrl}</a>`;
-                    document.getElementById('playBtn').style.display = 'inline-block'; // Show Play button
-                    document.getElementById('playBtn').setAttribute('data-url', imageUrl); // Set the VLC URL in the button's data attribute
-                } else {
-                    document.getElementById('imageLink').innerHTML = 'No OG Image link found.';
-                    document.getElementById('playBtn').style.display = 'none'; // Hide Play button if no URL
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching content:', error);
-                alert('Failed to fetch content from the provided URL.');
-            });
-    }
-
-    function playVlc() {
-        const vlcUrl = document.getElementById('playBtn').getAttribute('data-url');
-        window.open(vlcUrl, '_blank');
-    }
-
-    function copyToClipboard() {
-        const contentTextarea = document.getElementById('content');
-        contentTextarea.select();
-        contentTextarea.setSelectionRange(0, 99999);
-
-        document.execCommand('copy');
-        alert("Content copied to clipboard!");
-    }
-</script>
-
+<script src="script.js"></script>
 </body>
 </html>
