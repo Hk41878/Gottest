@@ -3,57 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HDHub4U Search</title>
+    <title>Display Website HTML in Textbox</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 20px;
-            background-color: #f4f4f9;
+            margin: 20px;
+            padding: 0;
+            background-color: #f4f4f4;
         }
         h1 {
-            color: #333;
+            text-align: center;
         }
-        input, button {
+        .container {
+            width: 80%;
+            margin: 0 auto;
+        }
+        textarea {
+            width: 100%;
+            height: 300px;
+            font-family: monospace;
+            font-size: 14px;
             padding: 10px;
-            margin: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
-            font-size: 16px;
+            background-color: #fff;
         }
         button {
-            background-color: #007BFF;
-            color: white;
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 16px;
             cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
         }
         button:hover {
             background-color: #0056b3;
         }
-        .output {
-            margin-top: 20px;
-            font-size: 18px;
-            color: #444;
-            word-break: break-word;
-        }
     </style>
 </head>
 <body>
-    <h1>HDHub4U Search Generator</h1>
-    <p>Enter text below to generate the search URL:</p>
-    <input type="text" id="inputText" placeholder="Enter text here" />
-    <button onclick="generateURL()">Generate URL</button>
-    <div class="output" id="output"></div>
 
-    <script>
-        function generateURL() {
-            const baseURL = "https://hdhub4u.cat/?s=";
-            const inputText = document.getElementById("inputText").value.trim();
-            const encodedText = inputText.replace(/ /g, "+");
-            const finalURL = baseURL + encodedText;
+<div class="container">
+    <h1>Fetch HTML Content</h1>
+    <button onclick="fetchContent()">Fetch Content</button>
+    <textarea id="content" readonly></textarea>
+</div>
 
-            const outputDiv = document.getElementById("output");
-            outputDiv.innerHTML = `Generated URL: <a href="${finalURL}" target="_blank">${finalURL}</a>`;
-        }
-    </script>
+<script>
+    function fetchContent() {
+        // Use the Fetch API to get content from another website
+        fetch('https://api.allorigins.win/raw?url=https://example.com')  // Replace with your target URL
+            .then(response => response.text())
+            .then(data => {
+                // Display the fetched content inside the textarea
+                document.getElementById('content').value = data;
+            })
+            .catch(error => {
+                console.error('Error fetching content:', error);
+            });
+    }
+</script>
+
 </body>
 </html>
