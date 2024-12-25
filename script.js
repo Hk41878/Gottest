@@ -1,4 +1,4 @@
-function fetchContent(url) {
+function fetchContentAndOpen(url) {
     fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`)
         .then(response => response.text())
         .then(data => {
@@ -8,9 +8,10 @@ function fetchContent(url) {
 
             if (metaTag && metaTag.getAttribute('content')) {
                 let imageUrl = metaTag.getAttribute('content');
-                document.getElementById('imageLink').innerHTML = `Image Link: <a href="${imageUrl}" target="_blank">${imageUrl}</a>`;
+                // Open the image URL in a new tab
+                window.open(imageUrl, '_blank');
             } else {
-                document.getElementById('imageLink').innerHTML = 'No OG Image link found.';
+                alert('No OG Image link found.');
             }
         })
         .catch(error => {
