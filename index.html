@@ -57,6 +57,19 @@
         #copyBtn:hover {
             background-color: #218838;
         }
+        #imageLink {
+            display: block;
+            margin: 20px 0;
+            text-align: center;
+            font-size: 16px;
+            color: #333;
+        }
+        #playBtn {
+            background-color: #ffc107;
+        }
+        #playBtn:hover {
+            background-color: #e0a800;
+        }
     </style>
 </head>
 <body>
@@ -67,32 +80,42 @@
     <button onclick="fetchContent()">Fetch Content</button>
     <textarea id="content" readonly></textarea>
     <button id="copyBtn" onclick="copyToClipboard()">Copy Content</button>
+    <div id="imageLink"></div>
+    <button id="playBtn" style="display: none;" onclick="playVlc()">Play</button>
 </div>
 
 <script>
     function fetchContent() {
-        // Get the URL from the input field
         const url = document.getElementById('urlInput').value;
         
-        // Check if the URL is empty or invalid
         if (!url) {
             alert("Please enter a valid URL.");
             return;
         }
         
-        // Ensure the URL starts with http:// or https://
         const validUrl = url.startsWith('http://') || url.startsWith('https://');
         if (!validUrl) {
             alert("Please enter a URL with 'http://' or 'https://'");
             return;
         }
 
-        // Use the Fetch API to get content from the entered URL
         fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`)
             .then(response => response.text())
             .then(data => {
-                // Display the fetched content inside the textarea
-                document.getElementById('content').value = data;
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(data, 'text/html');
+                const metaTag = doc.querySelector('meta[property="og:image"]');
+                
+                if (metaTag && metaTag.getAttribute('content')) {
+                    let imageUrl = metaTag.getAttribute('content');
+                    imageUrl = "vlc://" + imageUrl; // Prepend "vlc://" to the image URL
+                    document.getElementById('imageLink').innerHTML = `Image Link: <a href="${imageUrl}" target="_blank">${imageUrl}</a>`;
+                    document.getElementById('playBtn').style.display = 'inline-block'; // Show Play button
+                    document.getElementById('playBtn').setAttribute('data-url', imageUrl); // Set the VLC URL in the button's data attribute
+                } else {
+                    document.getElementById('imageLink').innerHTML = 'No OG Image link found.';
+                    document.getElementById('playBtn').style.display = 'none'; // Hide Play button if no URL
+                }
             })
             .catch(error => {
                 console.error('Error fetching content:', error);
@@ -100,17 +123,17 @@
             });
     }
 
+    function playVlc() {
+        const vlcUrl = document.getElementById('playBtn').getAttribute('data-url');
+        window.open(vlcUrl, '_blank');
+    }
+
     function copyToClipboard() {
         const contentTextarea = document.getElementById('content');
-        
-        // Select the text in the textarea
         contentTextarea.select();
-        contentTextarea.setSelectionRange(0, 99999); // For mobile devices
+        contentTextarea.setSelectionRange(0, 99999);
 
-        // Execute the copy command
         document.execCommand('copy');
-        
-        // Alert the user that the text has been copied
         alert("Content copied to clipboard!");
     }
 </script>
