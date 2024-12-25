@@ -1,17 +1,4 @@
-function fetchContent() {
-    const url = document.getElementById('urlInput').value;
-
-    if (!url) {
-        alert("Please enter a valid URL.");
-        return;
-    }
-
-    const validUrl = url.startsWith('http://') || url.startsWith('https://');
-    if (!validUrl) {
-        alert("Please enter a URL with 'http://' or 'https://'");
-        return;
-    }
-
+function fetchContent(url) {
     fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`)
         .then(response => response.text())
         .then(data => {
