@@ -3,20 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fetch and Open OG Image in VLC</title>
+    <title>WD My Cloud Streaming</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div class="container">
+        <h1>WD My Cloud Video Player</h1>
+        <div class="search-bar">
+            <input type="text" id="videoLink" placeholder="Enter WD My Cloud video link">
+            <button onclick="pasteClipboard()">Paste</button>
+            <button onclick="fetchOGLink()">Search</button>
+        </div>
+        <div id="result" class="hidden">
+            <p>Fetched Link:</p>
+            <input type="text" id="ogLink" readonly>
+            <button onclick="copyToClipboard()">Copy</button>
+            <button onclick="playInVLC()">Play</button>
+        </div>
+    </div>
 
-<div class="container">
-    <h1>Fetch and Open OG Image in VLC from Provided Links</h1>
-    
-    <button onclick="fetchContentAndOpen('https://home.mycloud.com/action/share/f9b47750-83da-4cd6-82f1-d0d528461b9a')">Fetch OG Image from Link 1</button>
-    <button onclick="fetchContentAndOpen('https://home.mycloud.com/action/share/773f1c24-1037-4b48-8b18-e43d9c6e85de')">Fetch OG Image from Link 2</button>
-
-    <div id="imageLink" style="text-align: center; margin-top: 20px;"></div>
-</div>
-
-<script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
