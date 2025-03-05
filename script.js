@@ -1,25 +1,53 @@
-function fetchContentAndOpen(url) {
+function pasteClipboard() {
+    navigator.clipboard.readText().then(text => {
+        document.getElementById("videoLink").value = text;
+    }).catch(err => {
+        alert("Failed to paste: " + err);
+    });
+}
+
+function fetchOGLink() {
+    let url = document.getElementById("videoLink").value.trim();
+    if (!url) {
+        alert("Please enter a valid WD My Cloud video link.");
+        return;
+    }
+
+    document.getElementById("result").classList.add("hidden");
+
     fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`)
         .then(response => response.text())
         .then(data => {
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(data, 'text/html');
-            const metaTag = doc.querySelector('meta[property="og:image"]');
+            let parser = new DOMParser();
+            let doc = parser.parseFromString(data, 'text/html');
+            let metaTag = doc.querySelector('meta[property="og:image"]');
 
             if (metaTag && metaTag.getAttribute('content')) {
                 let imageUrl = metaTag.getAttribute('content');
-                let vlcUrl = `vlc://${imageUrl}`;
-
-                // Display the link as a clickable element to open in VLC
-                document.getElementById('imageLink').innerHTML = `
-                    <a href="${vlcUrl}" target="_blank">Click here to open the image in VLC</a>
-                `;
+                document.getElementById("ogLink").value = imageUrl;
+                document.getElementById("result").classList.remove("hidden");
             } else {
-                document.getElementById('imageLink').innerHTML = 'No OG Image link found.';
+                alert("OG link not found!");
             }
         })
         .catch(error => {
-            console.error('Error fetching content:', error);
-            alert('Failed to fetch content from the provided URL.');
+            console.error("Error fetching content:", error);
+            alert("Failed to fetch content from the provided URL.");
         });
+}
+
+function copyToClipboard() {
+    let copyText = document.getElementById("ogLink");
+    copyText.select();
+    document.execCommand("copy");
+    alert("Copied to clipboard!");
+}
+
+function playInVLC() {
+    let ogLink = document.getElementById("ogLink").value;
+    if (!ogLink) {
+        alert("No OG link found!");
+        return;
+    }
+    window.location.href = `vlc://${ogLink}`;
 }
