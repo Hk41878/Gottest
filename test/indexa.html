@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Direct Video Playback</title>
+  <title>MyCloud Video Player</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -13,26 +13,49 @@
       margin-top: 20px;
       text-align: center;
     }
-    iframe {
+    video {
       width: 100%;
-      height: 500px;
-      border: none;
+      max-width: 600px;
+      height: auto;
     }
   </style>
 </head>
 <body>
 
   <h2>Play MyCloud Video</h2>
-  <button onclick="loadVideo()">Play Video</button>
+  <button onclick="loadVideo()">Load Video</button>
 
   <div id="video-container"></div>
 
   <script>
-    function loadVideo() {
+    async function loadVideo() {
       const container = document.getElementById('video-container');
-      container.innerHTML = `
-        <iframe src="https://home.mycloud.com/action/share/a30a4e64-5c0c-496c-b856-8ffce0b7fa9c" allowfullscreen></iframe>
-      `;
+      container.innerHTML = 'Loading...';
+
+      try {
+        const response = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent('https://home.mycloud.com/action/share/b196d6f9-23fa-4ae6-b896-b2d69fc37d1e'));
+        const text = await response.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(text, 'text/html');
+
+        // Attempt to find the video source URL
+        const videoMeta = doc.querySelector('meta[property="og:video"]');
+        const videoUrl = videoMeta ? videoMeta.getAttribute('content') : null;
+
+        if (videoUrl) {
+          container.innerHTML = `
+            <video controls>
+              <source src="${videoUrl}" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          `;
+        } else {
+          container.innerHTML = 'Direct video URL not found.';
+        }
+      } catch (error) {
+        console.error('Error fetching video:', error);
+        container.innerHTML = 'An error occurred while loading the video.';
+      }
     }
   </script>
 
