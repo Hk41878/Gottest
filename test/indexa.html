@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Direct Video Playback</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f0f0f0;
+    }
+    #video-container {
+      margin-top: 20px;
+      text-align: center;
+    }
+    iframe {
+      width: 100%;
+      height: 500px;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Play MyCloud Video</h2>
+  <button onclick="loadVideo()">Play Video</button>
+
+  <div id="video-container"></div>
+
+  <script>
+    function loadVideo() {
+      const container = document.getElementById('video-container');
+      container.innerHTML = `
+        <iframe src="https://home.mycloud.com/action/share/a30a4e64-5c0c-496c-b856-8ffce0b7fa9c" allowfullscreen></iframe>
+      `;
+    }
+  </script>
+
+</body>
+</html>
