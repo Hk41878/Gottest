@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>VLC Play Example</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f0f0f0;
+    }
+    .episode-card {
+      background: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px #ccc;
+      max-width: 400px;
+      margin: auto;
+      text-align: center;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .play-btn {
+      background-color: #4caf50;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="episode-card">
+    <h3>Episode: Sample MyCloud Video</h3>
+    <button class="load-btn" data-url="https://home.mycloud.com/action/share/a30a4e64-5c0c-496c-b856-8ffce0b7fa9c" onclick="fetchContentAndOpen(this)">Load</button>
+  </div>
+
+  <script>
+    function fetchContentAndOpen(button) {
+      const allButtons = document.querySelectorAll('.load-btn, .play-btn');
+      allButtons.forEach((btn) => {
+        btn.innerHTML = 'Load';
+        btn.classList.remove('play-btn');
+        btn.classList.add('load-btn');
+        btn.style.backgroundColor = '';
+      });
+
+      button.style.backgroundColor = '#4caf50';
+      button.innerHTML = 'Wait...';
+
+      const url = button.getAttribute("data-url");
+
+      fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`)
+        .then(response => response.text())
+        .then(data => {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(data, 'text/html');
+          const metaTag = doc.querySelector('meta[property="og:image"]');
+
+          if (metaTag && metaTag.getAttribute('content')) {
+            let imageUrl = metaTag.getAttribute('content');
+
+            button.innerHTML = 'Play';
+            button.classList.remove('load-btn');
+            button.classList.add('play-btn');
+
+            button.onclick = () => {
+              window.location.href = `vlc://${imageUrl}`;
+              button.innerHTML = 'Replay';
+              button.onclick = () => {
+                window.location.href = `vlc://${imageUrl}`;
+              };
+            };
+          } else {
+            alert('OG Image not found!');
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching content:', error);
+          alert('Failed to fetch content from the provided URL.');
+        });
+    }
+  </script>
+
+</body>
+</html>
